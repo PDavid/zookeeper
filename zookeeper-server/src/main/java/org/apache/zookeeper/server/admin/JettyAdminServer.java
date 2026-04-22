@@ -34,19 +34,19 @@ import org.apache.zookeeper.common.SecretUtils;
 import org.apache.zookeeper.common.X509Util;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.auth.IPAuthenticationProvider;
+import org.eclipse.jetty.ee8.nested.ServletConstraint;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee8.security.ConstraintMapping;
+import org.eclipse.jetty.ee8.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -369,11 +369,12 @@ public class JettyAdminServer implements AdminServer {
      * @param ctxHandler the context to modify
      */
     private void constrainTraceMethod(ServletContextHandler ctxHandler) {
-        Constraint c = new Constraint();
-        c.setAuthenticate(true);
+        ServletConstraint forbidden = new ServletConstraint();
+        forbidden.setAuthenticate(true);
+        forbidden.setRoles(new String[0]);
 
         ConstraintMapping cmt = new ConstraintMapping();
-        cmt.setConstraint(c);
+        cmt.setConstraint(forbidden);
         cmt.setMethod("TRACE");
         cmt.setPathSpec("/*");
 

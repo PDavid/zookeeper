@@ -560,7 +560,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <commons-cli.version>1.5.0</commons-cli.version>
     <netty.version>4.1.130.Final</netty.version>
-    <jetty.version>9.4.58.v20250814</jetty.version>
+    <jetty.version>12.0.34</jetty.version>
     <jackson.version>2.18.1</jackson.version>
     <jline.version>3.25.1</jline.version>
     <snappy.version>1.1.10.5</snappy.version>
@@ -723,8 +723,13 @@
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-security</artifactId>
         <version>${jetty.version}</version>
       </dependency>
       <dependency>

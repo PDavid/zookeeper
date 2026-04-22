@@ -23,6 +23,7 @@ package org.apache.zookeeper.server.admin;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadPendingException;
 import java.nio.channels.WritePendingException;
@@ -38,13 +39,23 @@ public class ReadAheadEndpoint implements EndPoint {
     private int leftToRead;
     private IOException pendingException = null;
 
+    @SuppressWarnings("deprecation")
     @Override
     public InetSocketAddress getLocalAddress() {
         return endPoint.getLocalAddress();
     }
     @Override
+    public SocketAddress getLocalSocketAddress() {
+        return endPoint.getLocalSocketAddress();
+    }
+    @SuppressWarnings("deprecation")
+    @Override
     public InetSocketAddress getRemoteAddress() {
         return endPoint.getRemoteAddress();
+    }
+    @Override
+    public SocketAddress getRemoteSocketAddress() {
+        return endPoint.getRemoteSocketAddress();
     }
     @Override
     public boolean isOpen() {
@@ -71,6 +82,10 @@ public class ReadAheadEndpoint implements EndPoint {
         endPoint.close();
     }
     @Override
+    public void close(Throwable cause) {
+        endPoint.close();
+    }
+    @Override
     public Object getTransport() {
         return endPoint.getTransport();
     }
@@ -87,12 +102,8 @@ public class ReadAheadEndpoint implements EndPoint {
         endPoint.onOpen();
     }
     @Override
-    public void onClose() {
-        endPoint.onClose();
-    }
-    @Override
-    public boolean isOptimizedForDirectBuffers() {
-        return endPoint.isOptimizedForDirectBuffers();
+    public void onClose(Throwable cause) {
+        endPoint.close();
     }
     @Override
     public boolean isFillInterested() {

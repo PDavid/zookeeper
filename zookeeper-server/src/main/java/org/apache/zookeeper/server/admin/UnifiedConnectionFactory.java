@@ -18,6 +18,7 @@
 
 package org.apache.zookeeper.server.admin;
 
+import java.net.InetSocketAddress;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSession;
 import org.apache.zookeeper.server.ServerMetrics;
@@ -86,12 +87,12 @@ public class UnifiedConnectionFactory extends AbstractConnectionFactory {
         SslConnection sslConnection;
 
         if (isSSL) {
-            SSLEngine engine = this.sslContextFactory.newSSLEngine(aheadEndpoint.getRemoteAddress());
+            SSLEngine engine = this.sslContextFactory.newSSLEngine((InetSocketAddress) aheadEndpoint.getRemoteSocketAddress());
             engine.setUseClientMode(false);
             sslConnection = this.newSslConnection(connector, aheadEndpoint, engine);
             sslConnection.setRenegotiationAllowed(this.sslContextFactory.isRenegotiationAllowed());
             this.configure(sslConnection, connector, aheadEndpoint);
-            plainEndpoint = sslConnection.getDecryptedEndPoint();
+            plainEndpoint = sslConnection.getSslEndPoint();
         } else {
             sslConnection = null;
             plainEndpoint = aheadEndpoint;
@@ -109,7 +110,7 @@ public class UnifiedConnectionFactory extends AbstractConnectionFactory {
         final Connector connector,
         final EndPoint endPoint,
         final SSLEngine engine) {
-        return new SslConnection(connector.getByteBufferPool(), connector.getExecutor(), endPoint, engine);
+        return new SslConnection(connector.getByteBufferPool(), connector.getExecutor(), sslContextFactory, endPoint, engine);
     }
 
     @Override
